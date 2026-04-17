@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migr8Now Qualifier · Sabel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0B0B0C;
+    --card:#161618;
+    --card-hover:#1D1D20;
+    --red:#E10600;
+    --red-dim:rgba(225,6,0,0.35);
+    --white:#FFFFFF;
+    --body:#E2E8F0;
+    --muted:#94A3B8;
+    --border:#2A3547;
+    --mono:#64748B;
+    --green:#22C55E;
+    --amber:#F59E0B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--black);color:var(--body);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px;line-height:1.55}
+
+  /* Centre line motif */
+  body::before{
+    content:"";position:fixed;top:0;bottom:0;left:50%;width:1px;
+    background:var(--red);opacity:0.22;pointer-events:none;z-index:0;
+  }
+
+  .page{max-width:960px;margin:0 auto;padding:40px 32px 120px;position:relative;z-index:1}
+
+  /* Header */
+  header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+  .brand{display:flex;flex-direction:column;gap:4px}
+  .logo-text{font-weight:700;font-size:22px;color:var(--white);letter-spacing:-0.02em}
+  .logo-text .dot{color:var(--red)}
+  .tagline{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mono);letter-spacing:0.15em;text-transform:uppercase}
+  .doc-type{text-align:right}
+  .doc-type .label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px}
+  .doc-type .title{font-size:18px;font-weight:600;color:var(--white)}
+
+  /* Intro */
+  .intro{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);padding:20px 24px;margin-bottom:40px;border-radius:4px}
+  .intro h1{font-size:24px;color:var(--white);font-weight:700;margin-bottom:8px;letter-spacing:-0.01em}
+  .intro p{color:var(--body);font-size:14px}
+  .intro p + p{margin-top:8px}
+
+  /* Sticky verdict */
+  .verdict{position:sticky;top:16px;z-index:10;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 20px;margin-bottom:32px;display:flex;align-items:center;justify-content:space-between;gap:16px;transition:all .25s ease}
+  .verdict.ok{border-color:var(--green);box-shadow:0 0 0 1px var(--green)}
+  .verdict.bespoke{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+  .verdict-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0}
+  .verdict-badge{padding:6px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+  .verdict-badge.pending{background:var(--border);color:var(--muted)}
+  .verdict-badge.ok{background:var(--green);color:var(--black)}
+  .verdict-badge.bespoke{background:var(--red);color:var(--white)}
+  .verdict-text{font-size:13px;color:var(--body);min-width:0}
+  .verdict-text strong{color:var(--white);display:block;margin-bottom:2px}
+  .verdict-text .reasons{font-size:12px;color:var(--muted);display:block}
+
+  /* Sections */
+  section.group{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:4px;padding:28px 32px;margin-bottom:24px}
+  section.group h2{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:4px;font-weight:700}
+  section.group h2 + .section-title{font-size:18px;font-weight:600;color:var(--white);margin-bottom:20px;letter-spacing:-0.01em}
+
+  /* Fields */
+  .field{margin-bottom:20px}
+  .field:last-child{margin-bottom:0}
+  label{display:block;font-size:13px;color:var(--white);font-weight:500;margin-bottom:8px}
+  label .req{color:var(--red);margin-left:4px}
+  label .hint{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:2px}
+
+  input[type=text],input[type=email],select,textarea{
+    width:100%;background:var(--black);border:1px solid var(--border);color:var(--white);
+    padding:10px 12px;font-family:'Inter',sans-serif;font-size:14px;border-radius:4px;
+    transition:border-color .15s ease;
+  }
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--red)}
+  textarea{resize:vertical;min-height:80px}
+  select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%2394A3B8' d='M2 4l4 4 4-4'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+
+  /* Radio groups */
+  .radio-group{display:flex;flex-wrap:wrap;gap:8px}
+  .radio-group label{
+    display:inline-flex;align-items:center;padding:8px 14px;background:var(--black);
+    border:1px solid var(--border);border-radius:4px;cursor:pointer;margin-bottom:0;
+    font-size:13px;color:var(--body);transition:all .15s ease;user-select:none;font-weight:400;
+  }
+  .radio-group label:hover{border-color:var(--muted);color:var(--white)}
+  .radio-group label.checked{background:var(--red);border-color:var(--red);color:var(--white);font-weight:500}
+  .radio-group input[type=radio]{display:none}
+
+  /* Conditional reveal */
+  .conditional{margin-top:12px;padding-left:16px;border-left:2px solid var(--border);display:none}
+  .conditional.visible{display:block}
+
+  /* Submit bar */
+  .submit-bar{margin-top:40px;display:flex;justify-content:flex-end;gap:12px;align-items:center}
+  button{
+    background:var(--red);color:var(--white);border:none;padding:12px 28px;
+    font-family:'Inter',sans-serif;font-size:14px;font-weight:600;border-radius:4px;
+    cursor:pointer;transition:background .15s ease;letter-spacing:0.02em;
+  }
+  button:hover{background:#FF1A0D}
+  button:disabled{background:var(--border);cursor:not-allowed;color:var(--muted)}
+  .submit-status{font-size:13px;color:var(--muted)}
+  .submit-status.success{color:var(--green)}
+  .submit-status.error{color:var(--red)}
+
+  /* Footer */
+  footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mono);letter-spacing:0.15em;text-transform:uppercase}
+
+  /* Success screen */
+  .success-screen{display:none;text-align:center;padding:80px 20px}
+  .success-screen.visible{display:block}
+  .success-screen .icon{font-size:48px;color:var(--green);margin-bottom:16px}
+  .success-screen h2{color:var(--white);font-size:24px;margin-bottom:12px}
+  .success-screen p{color:var(--body);margin-bottom:8px}
+  .success-screen .ref{font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:12px;margin-top:16px}
+
+  @media (max-width:640px){
+    .page{padding:24px 16px 80px}
+    header{flex-direction:column;gap:16px;align-items:flex-start}
+    .doc-type{text-align:left}
+    section.group{padding:20px}
+    .verdict{flex-direction:column;align-items:flex-start;gap:10px}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="brand">
+    <div class="logo-text">SABEL<span class="dot">.</span></div>
+    <div class="tagline">Perfect Made Possible</div>
+  </div>
+  <div class="doc-type">
+    <div class="label">Internal · Intercom AE Use</div>
+    <div class="title">Migr8Now Qualifier</div>
+  </div>
+</header>
+
+<div class="intro">
+  <h1>Pre-qualify a migration opportunity</h1>
+  <p>Use this form to qualify an Intercom migration deal before passing it to Sabel. The verdict updates live as you fill it in and tells you whether it drops straight into the automated Migr8Now pipeline, or needs a bespoke scoping call first.</p>
+  <p>Takes about 3 minutes. Submit when all required fields are green. A copy of the result will be emailed to you and to Richard.</p>
+</div>
+
+<!-- Sticky verdict -->
+<div class="verdict" id="verdict">
+  <div class="verdict-left">
+    <div class="verdict-badge pending" id="verdictBadge">Awaiting input</div>
+    <div class="verdict-text">
+      <strong id="verdictHeadline">Fill the form to see the qualification verdict</strong>
+      <span class="reasons" id="verdictReasons">The verdict updates as answers are provided.</span>
+    </div>
+  </div>
+</div>
+
+<!-- FORM -->
+<form id="qualifierForm" novalidate>
+
+  <!-- Section 1: About the deal -->
+  <section class="group">
+    <h2>Section 01</h2>
+    <div class="section-title">About the deal</div>
+
+    <div class="field">
+      <label>Company / prospect name <span class="req">*</span></label>
+      <input type="text" name="company" required>
+    </div>
+
+    <div class="field">
+      <label>AE name <span class="req">*</span></label>
+      <input type="text" name="ae_name" required>
+    </div>
+
+    <div class="field">
+      <label>AE email
+        <span class="hint">Optional. If provided, a copy of the verdict will be emailed to you.</span>
+      </label>
+      <input type="email" name="ae_email">
+    </div>
+  </section>
+
+  <!-- Section 2: Source and volume -->
+  <section class="group">
+    <h2>Section 02</h2>
+    <div class="section-title">Source and volume</div>
+
+    <div class="field">
+      <label>Source platform <span class="req">*</span></label>
+      <div class="radio-group" data-name="source">
+        <label><input type="radio" name="source" value="Zendesk">Zendesk</label>
+        <label><input type="radio" name="source" value="Freshdesk">Freshdesk</label>
+        <label><input type="radio" name="source" value="Help Scout">Help Scout</label>
+        <label><input type="radio" name="source" value="Intercom">Intercom</label>
+        <label><input type="radio" name="source" value="Zoho">Zoho</label>
+        <label><input type="radio" name="source" value="LiveChat">LiveChat</label>
+        <label><input type="radio" name="source" value="Salesforce Service Cloud">Salesforce SC</label>
+        <label><input type="radio" name="source" value="Other">Other</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Migrating into Intercom as <span class="req">*</span></label>
+      <div class="radio-group" data-name="migrate_as">
+        <label><input type="radio" name="migrate_as" value="Tickets">Tickets</label>
+        <label><input type="radio" name="migrate_as" value="Conversations">Conversations (training Fin)</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Approximate ticket volume <span class="req">*</span>
+        <span class="hint">Informational only. Volume alone will not move the verdict; it flags infrastructure planning.</span>
+      </label>
+      <div class="radio-group" data-name="ticket_volume">
+        <label><input type="radio" name="ticket_volume" value="<100k">&lt;100k</label>
+        <label><input type="radio" name="ticket_volume" value="100k-250k">100k–250k</label>
+        <label><input type="radio" name="ticket_volume" value="250k-500k">250k–500k</label>
+        <label><input type="radio" name="ticket_volume" value="500k-1M">500k–1M</label>
+        <label><input type="radio" name="ticket_volume" value="1M-1.5M">1M–1.5M</label>
+        <label><input type="radio" name="ticket_volume" value="1.5M-2M">1.5M–2M</label>
+        <label><input type="radio" name="ticket_volume" value="2M+">2M+</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Approximate number of agents <span class="req">*</span></label>
+      <div class="radio-group" data-name="agent_count">
+        <label><input type="radio" name="agent_count" value="<10">&lt;10</label>
+        <label><input type="radio" name="agent_count" value="10-50">10–50</label>
+        <label><input type="radio" name="agent_count" value="50+">50+</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Timeframe of tickets for migration <span class="req">*</span></label>
+      <div class="radio-group" data-name="timeframe">
+        <label><input type="radio" name="timeframe" value="All history">All history</label>
+        <label><input type="radio" name="timeframe" value="Filtered">Filtered (specify cutoff)</label>
+      </div>
+      <div class="conditional" id="timeframeCond">
+        <input type="text" name="timeframe_detail" placeholder="e.g. last 12 months, from 2024-01-01, etc.">
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Structure and mappings -->
+  <section class="group">
+    <h2>Section 03</h2>
+    <div class="section-title">Structure and mappings</div>
+
+    <div class="field">
+      <label>Inbox structure <span class="req">*</span></label>
+      <div class="radio-group" data-name="inbox_structure">
+        <label><input type="radio" name="inbox_structure" value="Replicate 1:1">Replicate 1:1</label>
+        <label><input type="radio" name="inbox_structure" value="Restructure">Restructure as part of move</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Statuses <span class="req">*</span></label>
+      <div class="radio-group" data-name="statuses">
+        <label><input type="radio" name="statuses" value="Standard only">Standard set only</label>
+        <label><input type="radio" name="statuses" value="Custom exist">Custom statuses exist</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Ticket custom attributes <span class="req">*</span></label>
+      <div class="radio-group" data-name="ticket_attributes">
+        <label><input type="radio" name="ticket_attributes" value="ALL">Migrate ALL</label>
+        <label><input type="radio" name="ticket_attributes" value="Specific">Specific subset only</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Contacts and companies -->
+  <section class="group">
+    <h2>Section 04</h2>
+    <div class="section-title">Contacts and companies</div>
+
+    <div class="field">
+      <label>Contacts — which to migrate <span class="req">*</span></label>
+      <div class="radio-group" data-name="contacts_scope">
+        <label><input type="radio" name="contacts_scope" value="All">All contacts in account</label>
+        <label><input type="radio" name="contacts_scope" value="Ticket-attached">Only those attached to tickets</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Contact attributes <span class="req">*</span></label>
+      <div class="radio-group" data-name="contact_attributes">
+        <label><input type="radio" name="contact_attributes" value="ALL">Migrate ALL</label>
+        <label><input type="radio" name="contact_attributes" value="Specific">Specific subset only</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Companies <span class="req">*</span></label>
+      <div class="radio-group" data-name="companies">
+        <label><input type="radio" name="companies" value="Migrate">Migrate</label>
+        <label><input type="radio" name="companies" value="Skip">Skip</label>
+      </div>
+      <div class="conditional" id="companiesCond">
+        <label style="margin-top:8px">Company attributes</label>
+        <div class="radio-group" data-name="company_attributes">
+          <label><input type="radio" name="company_attributes" value="ALL">Migrate ALL</label>
+          <label><input type="radio" name="company_attributes" value="Specific">Specific subset only</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Compliance and complexity -->
+  <section class="group">
+    <h2>Section 05</h2>
+    <div class="section-title">Compliance and complexity</div>
+
+    <div class="field">
+      <label>Regulatory or data residency constraints <span class="req">*</span>
+        <span class="hint">Anything beyond standard GDPR can push this to bespoke (infrastructure changes needed).</span>
+      </label>
+      <div class="radio-group" data-name="regulatory">
+        <label><input type="radio" name="regulatory" value="None">None</label>
+        <label><input type="radio" name="regulatory" value="GDPR only">GDPR only</label>
+        <label><input type="radio" name="regulatory" value="HIPAA">HIPAA</label>
+        <label><input type="radio" name="regulatory" value="APRA">APRA</label>
+        <label><input type="radio" name="regulatory" value="Data residency">Data residency</label>
+        <label><input type="radio" name="regulatory" value="Other">Other</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Attachment / file hosting considerations <span class="req">*</span>
+        <span class="hint">Non-standard retention, very high volumes, or custom file hosting all push to bespoke.</span>
+      </label>
+      <div class="radio-group" data-name="attachments">
+        <label><input type="radio" name="attachments" value="Standard">Standard</label>
+        <label><input type="radio" name="attachments" value="Non-standard">Non-standard retention or volume</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Any non-standard mapping requests, custom logic, or "previous partner flagged this as complex"? <span class="req">*</span>
+        <span class="hint">Examples: source inbox → Intercom tag, conditional routing by content, merging or splitting inboxes.</span>
+      </label>
+      <div class="radio-group" data-name="custom_logic">
+        <label><input type="radio" name="custom_logic" value="None">None</label>
+        <label><input type="radio" name="custom_logic" value="Yes">Yes — describe</label>
+      </div>
+      <div class="conditional" id="customLogicCond">
+        <textarea name="custom_logic_detail" placeholder="Describe the custom logic, non-standard mapping, or previously-flagged complexity."></textarea>
+      </div>
+    </div>
+  </section>
+
+  <div class="submit-bar">
+    <div class="submit-status" id="submitStatus"></div>
+    <button type="submit" id="submitBtn">Submit qualifier</button>
+  </div>
+
+</form>
+
+<!-- Success screen -->
+<div class="success-screen" id="successScreen">
+  <div class="icon">✓</div>
+  <h2>Qualifier submitted</h2>
+  <p id="successVerdict"></p>
+  <p>A copy has been emailed to <strong>richard@sabelcustomersuccess.com</strong>, <strong>akbur.ghafoor@intercom.io</strong>, and to the AE email if provided.</p>
+  <p class="ref" id="successRef"></p>
+</div>
+
+<footer>
+  Perfect Made Possible · sabelcustomersuccess.com
+</footer>
+
+</div>
+
+<script>
+  // ---------- Config ----------
+  const API_ENDPOINT = 'https://sabel-qualifier.vercel.app/api/submit';
+
+  // ---------- Verdict logic ----------
+  function computeVerdict(data){
+    const reasons = [];
+
+    // Bespoke triggers
+    if (['Zoho','LiveChat','Salesforce Service Cloud','Other'].includes(data.source)){
+      reasons.push(`Source "${data.source}" requires bespoke migration tooling`);
+    }
+    if (data.regulatory && !['None','GDPR only'].includes(data.regulatory)){
+      reasons.push(`Regulatory constraint (${data.regulatory}) requires infra review`);
+    }
+    if (data.attachments === 'Non-standard'){
+      reasons.push('Non-standard attachment handling requires scoping');
+    }
+    if (data.custom_logic === 'Yes'){
+      reasons.push('Non-standard mapping or custom logic flagged');
+    }
+
+    // Informational notes (don't flip verdict)
+    const notes = [];
+    if (['500k-1M','1M-1.5M','1.5M-2M','2M+'].includes(data.ticket_volume)){
+      notes.push(`Volume ${data.ticket_volume} — infrastructure planning required`);
+    }
+    if (data.agent_count === '50+'){
+      notes.push('50+ agents — extended setup time');
+    }
+
+    const verdict = reasons.length === 0 ? 'AUTOMATED' : 'BESPOKE';
+    return { verdict, reasons, notes };
+  }
+
+  // ---------- Form state ----------
+  const form = document.getElementById('qualifierForm');
+  const verdictEl = document.getElementById('verdict');
+  const badgeEl = document.getElementById('verdictBadge');
+  const headlineEl = document.getElementById('verdictHeadline');
+  const reasonsEl = document.getElementById('verdictReasons');
+  const submitBtn = document.getElementById('submitBtn');
+  const submitStatus = document.getElementById('submitStatus');
+
+  function getFormData(){
+    const fd = new FormData(form);
+    const obj = {};
+    for (const [k,v] of fd.entries()) obj[k] = v;
+    return obj;
+  }
+
+  function requiredRadios(){
+    return ['source','migrate_as','ticket_volume','agent_count','timeframe','inbox_structure','statuses','ticket_attributes','contacts_scope','contact_attributes','companies','regulatory','attachments','custom_logic'];
+  }
+
+  function isFormComplete(data){
+    if (!data.company || !data.ae_name) return false;
+    for (const f of requiredRadios()){
+      if (!data[f]) return false;
+    }
+    if (data.timeframe === 'Filtered' && !data.timeframe_detail) return false;
+    if (data.custom_logic === 'Yes' && !data.custom_logic_detail) return false;
+    if (data.companies === 'Migrate' && !data.company_attributes) return false;
+    return true;
+  }
+
+  function updateVerdict(){
+    const data = getFormData();
+    const complete = isFormComplete(data);
+    const { verdict, reasons, notes } = computeVerdict(data);
+
+    // Count how many required questions answered
+    const answered = requiredRadios().filter(f => data[f]).length;
+    const total = requiredRadios().length;
+
+    verdictEl.classList.remove('ok','bespoke');
+    badgeEl.classList.remove('pending','ok','bespoke');
+
+    if (answered === 0){
+      badgeEl.classList.add('pending');
+      badgeEl.textContent = 'Awaiting input';
+      headlineEl.textContent = 'Fill the form to see the qualification verdict';
+      reasonsEl.textContent = 'The verdict updates as answers are provided.';
+    } else if (verdict === 'AUTOMATED'){
+      verdictEl.classList.add('ok');
+      badgeEl.classList.add('ok');
+      badgeEl.textContent = 'Automated';
+      headlineEl.textContent = complete
+        ? 'Qualifies for automated Migr8Now'
+        : `Tracking Automated (${answered}/${total} answered)`;
+      const noteText = notes.length ? ' · ' + notes.join(' · ') : '';
+      reasonsEl.textContent = complete
+        ? 'All triggers clear. Drops straight into the vanilla Migr8Now pipeline.' + noteText
+        : 'No bespoke triggers hit yet.' + noteText;
+    } else {
+      verdictEl.classList.add('bespoke');
+      badgeEl.classList.add('bespoke');
+      badgeEl.textContent = 'Bespoke';
+      headlineEl.textContent = complete
+        ? 'Requires bespoke scoping call'
+        : `Tracking Bespoke (${answered}/${total} answered)`;
+      reasonsEl.textContent = reasons.join(' · ') + (notes.length ? ' · ' + notes.join(' · ') : '');
+    }
+
+    submitBtn.disabled = !complete;
+  }
+
+  // ---------- Radio styling ----------
+  form.addEventListener('change', (e) => {
+    // Update checked styling
+    document.querySelectorAll('.radio-group').forEach(group => {
+      group.querySelectorAll('label').forEach(lbl => {
+        const input = lbl.querySelector('input[type=radio]');
+        if (input && input.checked) lbl.classList.add('checked');
+        else if (input) lbl.classList.remove('checked');
+      });
+    });
+
+    // Conditional reveals
+    const data = getFormData();
+    document.getElementById('timeframeCond').classList.toggle('visible', data.timeframe === 'Filtered');
+    document.getElementById('customLogicCond').classList.toggle('visible', data.custom_logic === 'Yes');
+    document.getElementById('companiesCond').classList.toggle('visible', data.companies === 'Migrate');
+
+    updateVerdict();
+  });
+
+  form.addEventListener('input', updateVerdict);
+
+  // ---------- Submit ----------
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = getFormData();
+    if (!isFormComplete(data)) {
+      submitStatus.textContent = 'Please complete all required fields.';
+      submitStatus.className = 'submit-status error';
+      return;
+    }
+
+    const { verdict, reasons, notes } = computeVerdict(data);
+    submitBtn.disabled = true;
+    submitStatus.textContent = 'Submitting...';
+    submitStatus.className = 'submit-status';
+
+    try {
+      const res = await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ ...data, verdict, reasons, notes, submitted_at: new Date().toISOString() })
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const result = await res.json();
+
+      // Show success screen
+      form.style.display = 'none';
+      document.getElementById('verdict').style.display = 'none';
+      document.querySelector('.intro').style.display = 'none';
+      const successEl = document.getElementById('successScreen');
+      successEl.classList.add('visible');
+      document.getElementById('successVerdict').innerHTML = `Verdict: <strong style="color:${verdict === 'AUTOMATED' ? '#22C55E' : '#E10600'}">${verdict}</strong>`;
+      document.getElementById('successRef').textContent = `Reference: ${result.id || 'saved'}`;
+      window.scrollTo({top:0, behavior:'smooth'});
+    } catch (err) {
+      submitStatus.textContent = 'Submission failed. Please try again or email richard@sabelcustomersuccess.com.';
+      submitStatus.className = 'submit-status error';
+      submitBtn.disabled = false;
+      console.error(err);
+    }
+  });
+
+  // Initial verdict
+  updateVerdict();
+</script>
+</body>
+</html>

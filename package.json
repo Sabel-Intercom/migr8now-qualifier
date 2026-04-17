@@ -1,0 +1,9 @@
+{
+  "name": "sabel-migr8now-qualifier",
+  "version": "1.0.0",
+  "description": "Sabel internal AE-facing qualifier for Migr8Now migrations. Captures 16 pre-qualification questions, computes live Automated/Bespoke verdict, persists to Upstash, emails summary via Resend.",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}

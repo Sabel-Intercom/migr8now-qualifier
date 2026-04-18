@@ -101,6 +101,21 @@
   .radio-group label:has(input[type=radio]:checked){background:var(--red);border-color:var(--red);color:var(--white);font-weight:500}
   .radio-group input[type=radio]{position:absolute;opacity:0;pointer-events:none;width:0;height:0}
 
+  /* Inline pill-style input */
+  .inline-input{
+    width:14ch;max-width:100%;padding:8px 14px;background:var(--black);
+    border:1px solid var(--border);border-radius:4px;color:var(--body);
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:400;
+    transition:border-color .15s ease;
+  }
+  .inline-input::placeholder{color:var(--muted)}
+  .inline-input:hover{border-color:var(--muted);color:var(--white)}
+  .inline-input:focus{outline:none;border-color:var(--red);color:var(--white)}
+  /* Hide number spinners so it looks like a pill */
+  .inline-input::-webkit-outer-spin-button,
+  .inline-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .inline-input[type=number]{-moz-appearance:textfield}
+
   /* Conditional reveal */
   .conditional{margin-top:12px;padding-left:16px;border-left:2px solid var(--border);display:none}
   .conditional.visible{display:block}
@@ -253,8 +268,9 @@
         <label><input type="radio" name="ticket_volume" value="1.5M-2M">1.5M–2M</label>
         <label><input type="radio" name="ticket_volume" value="2M+">2M+</label>
       </div>
-      <div style="margin-top:10px">
-        <input type="number" name="ticket_exact" min="0" step="1" placeholder="Exact ticket count (optional, for more accurate estimate)" style="max-width:420px">
+      <div style="margin-top:16px">
+        <label style="margin-bottom:8px">Exact ticket count if known for more accurate quote</label>
+        <input type="number" name="ticket_exact" min="0" step="1" class="inline-input">
       </div>
     </div>
 
@@ -352,6 +368,17 @@
     <div class="section-title">Compliance and complexity</div>
 
     <div class="field">
+      <label>What region does the customer need their data hosted in? <span class="req">*</span>
+        <span class="hint">Intercom hosts data in one of three regions. The customer's workspace region must align with their data residency needs.</span>
+      </label>
+      <div class="radio-group" data-name="data_region">
+        <label><input type="radio" name="data_region" value="US">US</label>
+        <label><input type="radio" name="data_region" value="AU">AU</label>
+        <label><input type="radio" name="data_region" value="EU">EU</label>
+      </div>
+    </div>
+
+    <div class="field">
       <label>Regulatory or data residency constraints <span class="req">*</span>
         <span class="hint">Anything beyond standard GDPR can push this to bespoke (infrastructure changes needed).</span>
       </label>
@@ -391,6 +418,9 @@
 
   <div class="caveat-note">
     <span style="color:var(--red)">*</span> Estimated hours and cost are based on the information provided above and are subject to change with further discovery. Final scope, hours, and pricing are confirmed in a formal proposal following a scoping call.
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);color:var(--body)">
+      To book a time with Sabel and the customer for further discovery, please use the following link: <a href="https://book.sabelcustomersuccess.com/bookmeeting" target="_blank" rel="noopener" style="color:var(--red);text-decoration:none;font-weight:600">book.sabelcustomersuccess.com/bookmeeting</a>
+    </div>
   </div>
 
   <div class="submit-bar">
@@ -540,7 +570,7 @@
   }
 
   function requiredRadios(){
-    return ['source','migrate_as','ticket_volume','agent_count','timeframe','inbox_structure','statuses','ticket_attributes','contacts_scope','contact_attributes','companies','regulatory','attachments','custom_logic'];
+    return ['source','migrate_as','ticket_volume','agent_count','timeframe','inbox_structure','statuses','ticket_attributes','contacts_scope','contact_attributes','companies','data_region','regulatory','attachments','custom_logic'];
   }
 
   function isFormComplete(data){
